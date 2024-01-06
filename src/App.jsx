@@ -16,25 +16,19 @@ function App() {
   const [country,setCountry]=useState('');
   const [leagueComponents,setLeagueComponents]=useState([]);
 
-  // async function leagueNames(country){
-  //   const response=await fetch("https://api-football-beta.p.rapidapi.com/leagues?country="+country,options);
-  //   let data=await response.json();
-  //   data.response.forEach((leagueName)=>{
-  //     setLeagueComponents([
-  //       <LeagueIcons key={leagueComponents.length+1} name={leagueName.league.logo} />
-  //     ])
-  //   })
-  // }
-
-  const searchBtnClick=()=>{
-    console.log(country);
-    fetch("https://api-football-beta.p.rapidapi.com/leagues?country="+country,options)
-    .then((response)=> response.json())
-    .then((data)=>{
-      console.log(data);
-      // data.forEach((names)=> setLeagueComponents(names.league.name))
+  async function leagueNames(countryInfo){
+    const response=await fetch("https://api-football-beta.p.rapidapi.com/leagues?country="+countryInfo,options);
+    let data=await response.json();
+    data.response.forEach((leagueName)=>{
+      let newData=leagueName.league.name;
+      setLeagueComponents([...leagueComponents,newData])
     })
   }
+
+  const searchBtnClick=()=>{
+    leagueNames(country);
+  }
+
   return (
     <>
       <Header />
@@ -45,8 +39,9 @@ function App() {
         <input type="text" placeholder="Enter Country Name" value={country} onChange={(e)=> setCountry(e.target.value)} className="w-72 mt-5 px-4 py-3 border-2 border-gray-500 outline-none rounded-md text-lg font-bold focus:border-blue-600" />
         <button onClick={searchBtnClick} className="outline-none px-4 py-2 border-2 border-blue-500 mt-5 font-rejouice text-blue-500 text-2xl rounded duration-150 ease-in-out hover:bg-blue-500 hover:text-white">Search League</button>
         <div className="mt-5 w-full h-40 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
-          {leagueComponents.map((component,index)=> {
-            <LeagueIcons key={index} name={component}/>
+          {leagueComponents.map((component)=> {
+            console.log(component);
+            <LeagueIcons key={component} name={component}/>
           })}
         </div>
       </div>
