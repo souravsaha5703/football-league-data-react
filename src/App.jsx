@@ -1,8 +1,9 @@
 import { useState } from "react";
 import FirstContent from "./Components/FirstContent";
 import Header from "./Components/Header";
-import LeagueIcons from "./Components/LeagueIcons";
 import Leagues from "./Components/TopLeagues";
+import MatchSection from "./Components/MatchSection";
+import useLeagueFixtures from "./Hooks/useLeagueFixtures";
 
 const options = {
     method: "GET",
@@ -15,11 +16,12 @@ const options = {
 function App() {
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
+    const [currentDate,setCurrentDate]=useState(new Date);
 
     async function leagueNames(countryInfo) {
         const response = await fetch(
             "https://api-football-beta.p.rapidapi.com/leagues?country=" +
-                countryInfo,
+            countryInfo,
             options
         );
         let data = await response.json();
@@ -29,7 +31,12 @@ function App() {
             const updatedLeagues = new Set([prevState]);
 
             data.response.forEach((leagueName) => {
-                updatedLeagues.add(leagueName.league.logo);
+                updatedLeagues.add(
+                    {
+                        logo:leagueName.league.logo,
+                        id:leagueName.league.id
+                    }
+                );
             });
 
             return [...updatedLeagues];
@@ -63,14 +70,25 @@ function App() {
                     Search League
                 </button>
                 <div className="mt-5 w-full h-40 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
-                    {leagueComponents.map((component) => {
-                        return <LeagueIcons key={component} logo={component} />;
+                    {leagueComponents.map((component,index) => {
+                        return <img src={component.logo} id={component.id} className="w-24 object-cover cursor-pointer" key={index}/>;
                     })}
                 </div>
             </div>
             <h2 className="mt-4 text-indigo-600 font-playfair font-bold underline text-4xl text-center">
                 League Details
             </h2>
+            <div className="w-full p-4 flex items-center justify-center">
+                <div className="w-3/4 p-4 bg-gradient-to-br from-indigo-200 to-blue-300 rounded-xl flex flex-col shadow-md shadow-slate-400">
+                    <h2 className="font-rejouice text-black text-2xl font-medium mx-5 my-5 max-[555px]:text-xl" id="league-name">League Name</h2>
+                    <div className="w-full py-2 flex items-center justify-center gap-4 max-[375px]:gap-2 max-[375px]:flex-wrap">
+                        <button className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm active:bg-blue-600 active:text-white" id="matchBtn">Matches</button>
+                        <button className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm" id="standingsBtn">Standings</button>
+                        <button className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm" id="statsBtn">Stats</button>
+                    </div>
+                    <MatchSection/>
+                </div>
+            </div>
         </>
     );
 }
