@@ -26,10 +26,10 @@ function App() {
 
         setLeagueComponents((prevState) => {
             // Using Set to avoid duplicates
-            const updatedLeagues = new Set([...prevState]);
+            const updatedLeagues = new Set([prevState]);
 
             data.response.forEach((leagueName) => {
-                updatedLeagues.add(leagueName.league.name);
+                updatedLeagues.add(leagueName.league.logo);
             });
 
             return [...updatedLeagues];
@@ -64,8 +64,7 @@ function App() {
                 </button>
                 <div className="mt-5 w-full h-40 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
                     {leagueComponents.map((component) => {
-                        console.log(component);
-                        <LeagueIcons key={component} name={component} />;
+                        return <LeagueIcons key={component} logo={component} />;
                     })}
                 </div>
             </div>

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
-function LeagueIcons({name}){
+function LeagueIcons({logo}){
 
     return (
-        // <img src={name} className="w-24 object-cover"/>
-        <h1 className="text-red-500 text-3xl">{name}</h1>
+        <img src={logo} className="w-24 object-cover cursor-pointer"/>
     )
 }
 
