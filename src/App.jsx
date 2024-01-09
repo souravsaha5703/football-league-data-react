@@ -2,8 +2,8 @@ import { useState } from "react";
 import FirstContent from "./Components/FirstContent";
 import Header from "./Components/Header";
 import Leagues from "./Components/TopLeagues";
-import MatchSection from "./Components/MatchSection";
 import useLeagueFixtures from "./Hooks/useLeagueFixtures";
+import Fixtures from "./Components/Fixtures.jsx";
 
 const options = {
     method: "GET",
@@ -16,7 +16,12 @@ const options = {
 function App() {
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
-    const [currentDate,setCurrentDate]=useState(new Date);
+    const [date,setDate]=useState();
+    const [leagueId,setLeagueId]=useState();
+    // const leagueFixtures=useLeagueFixtures(date,leagueId);
+
+    // const fixtures=Object.keys(leagueFixtures);
+
 
     async function leagueNames(countryInfo) {
         const response = await fetch(
@@ -47,6 +52,15 @@ function App() {
         leagueNames(country);
     };
 
+    const handleLeagueClick = (e)=>{
+        let selectedId=e.target.id;
+        setLeagueId(selectedId);
+    }
+
+    const searchFixtures=()=>{
+
+    }
+
     return (
         <>
             <Header />
@@ -71,7 +85,7 @@ function App() {
                 </button>
                 <div className="mt-5 w-full h-40 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
                     {leagueComponents.map((component,index) => {
-                        return <img src={component.logo} id={component.id} className="w-24 object-cover cursor-pointer" key={index}/>;
+                        return <img src={component.logo} id={component.id} className="w-24 object-cover cursor-pointer" key={index} onClick={handleLeagueClick}/>;
                     })}
                 </div>
             </div>
@@ -86,7 +100,13 @@ function App() {
                         <button className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm" id="standingsBtn">Standings</button>
                         <button className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm" id="statsBtn">Stats</button>
                     </div>
-                    <MatchSection/>
+                    <div className="w-full bg-white rounded-xl p-4 flex flex-col">
+                        <div className="w-full p-2 flex">
+                            <input type="date" id="data" value={date} className="w-36 bg-blue-400 h-10 rounded-md px-2 cursor-pointer" onChange={(e)=> setDate(e.target.value)}/>
+                            <button className="ml-5 px-3 py-1 bg-blue-500 rounded-lg text-white text-xl font-roboto hover:bg-blue-700 duration-150 ease-in" onClick={searchFixtures}>Search Matches</button>
+                        </div>
+                        <Fixtures/>
+                    </div>
                 </div>
             </div>
         </>
