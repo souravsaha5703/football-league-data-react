@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import LeagueIdContext from "../Contexts/LeagueIdContext";
 
-function useLeagueFixtures(date,id){
+function useLeagueFixtures(){
     const [data,setData]=useState({})
+    const {leagueId}=useContext(LeagueIdContext);
     const options = {
         method: "GET",
         headers: {
@@ -10,12 +12,14 @@ function useLeagueFixtures(date,id){
         },
     };
 
-    useEffect(()=>{
-        fetch(`https://api-football-beta.p.rapidapi.com/fixtures?season=2023&date=${date}&league=${id}`,options)
-        .then((response)=> response.json())
-        .then((resdata)=>setData(resdata))
-    },[date,id])
+    async function fixturesData(){
+        const response=await fetch(`https://api-football-beta.p.rapidapi.com/fixtures?season=2023&date=${leagueId.date}&league=${leagueId.selectedLeagueId}`,options);
+        let resdata=await response.json();
+        setData(resdata);
+    }
 
+    fixturesData();
+    
     return data
 }
 

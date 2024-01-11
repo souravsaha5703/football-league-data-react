@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import FirstContent from "./Components/FirstContent";
 import Header from "./Components/Header";
 import Leagues from "./Components/TopLeagues";
 import useLeagueFixtures from "./Hooks/useLeagueFixtures";
 import Fixtures from "./Components/Fixtures.jsx";
+import LeagueIdContextProvider from "./Contexts/LeagueIdContextProvider.jsx";
+import LeagueIdContext from "./Contexts/LeagueIdContext.js";
 
 const options = {
     method: "GET",
@@ -17,10 +19,12 @@ function App() {
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
     const [date,setDate]=useState();
-    const [leagueId,setLeagueId]=useState();
-    // const leagueFixtures=useLeagueFixtures(date,leagueId);
+    const [selectedLeagueId,setSelectedLeagueId]=useState(61);
+    const {setLeagueId}=useContext(LeagueIdContext);
+    const fixturesData=useLeagueFixtures();
 
-    // const fixtures=Object.keys(leagueFixtures);
+    
+
 
 
     async function leagueNames(countryInfo) {
@@ -54,11 +58,13 @@ function App() {
 
     const handleLeagueClick = (e)=>{
         let selectedId=e.target.id;
-        setLeagueId(selectedId);
+        setSelectedLeagueId(selectedId);
     }
 
-    const searchFixtures=()=>{
-
+    const handleFixtures=(e)=>{
+        e.preventDefault();
+        setLeagueId({date,selectedLeagueId});
+        console.log(fixturesData);
     }
 
     return (
@@ -103,9 +109,11 @@ function App() {
                     <div className="w-full bg-white rounded-xl p-4 flex flex-col">
                         <div className="w-full p-2 flex">
                             <input type="date" id="data" value={date} className="w-36 bg-blue-400 h-10 rounded-md px-2 cursor-pointer" onChange={(e)=> setDate(e.target.value)}/>
-                            <button className="ml-5 px-3 py-1 bg-blue-500 rounded-lg text-white text-xl font-roboto hover:bg-blue-700 duration-150 ease-in" onClick={searchFixtures}>Search Matches</button>
+                            <button className="ml-5 px-3 py-1 bg-blue-500 rounded-lg text-white text-xl font-roboto hover:bg-blue-700 duration-150 ease-in" onClick={handleFixtures}>Search Matches</button>
                         </div>
-                        <Fixtures/>
+                        <LeagueIdContextProvider>
+                            <Fixtures/>
+                        </LeagueIdContextProvider>
                     </div>
                 </div>
             </div>
