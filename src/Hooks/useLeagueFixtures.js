@@ -1,26 +1,40 @@
 import { useContext, useEffect, useState } from "react";
-import LeagueIdContext from "../Contexts/LeagueIdContext";
+import { LeagueIdContext } from "../Contexts/LeagueIdContextProvider";
 
-function useLeagueFixtures(){
-    const [data,setData]=useState({})
-    const {leagueId}=useContext(LeagueIdContext);
+function useLeagueFixtures() {
+  const [data, setData] = useState({});
+  const { leagueId } = useContext(LeagueIdContext);
+
+  useEffect(() => {
     const options = {
-        method: "GET",
-        headers: {
-            "X-RapidAPI-Key": "b95a4219c8msh9b913764c776818p1b95d1jsn6b530f0e9e2a",
-            "X-RapidAPI-Host": "api-football-beta.p.rapidapi.com",
-        },
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": "b95a4219c8msh9b913764c776818p1b95d1jsn6b530f0e9e2a",
+        "X-RapidAPI-Host": "api-football-beta.p.rapidapi.com",
+      },
     };
 
-    async function fixturesData(){
-        const response=await fetch(`https://api-football-beta.p.rapidapi.com/fixtures?season=2023&date=${leagueId.date}&league=${leagueId.selectedLeagueId}`,options);
-        let resdata=await response.json();
-        setData(resdata);
-    }
+    // Check if leagueId is defined before attempting to destructure
+    if (leagueId) {
+      const { date, selectedLeagueId } = leagueId;
 
-    fixturesData();
-    
-    return data
+      async function fixturesData() {
+        try {
+          const response = await fetch(`https://api-football-beta.p.rapidapi.com/fixtures?season=2023&date=${date}&league=${selectedLeagueId}`, options);
+          const resdata = await response.json();
+          setData(resdata);
+        } catch (error) {
+          console.error("Error fetching fixtures:", error);
+        }
+      }
+
+      fixturesData();
+    }
+  }, [leagueId]); // Ensure useEffect runs when leagueId changes
+
+  return data;
 }
+
+
 
 export default useLeagueFixtures;
