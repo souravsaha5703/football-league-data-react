@@ -6,6 +6,7 @@ import Fixtures from "./Fixtures";
 function LeagueDetails({selectedLeagueId}) {
     const { leagueId, setLeagueId } = useContext(LeagueIdContext);
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+    const [leagueMatches,setLeagueMatches]=useState([]);
     const fixturesData = useLeagueFixtures();
 
     const handleFixtures = (e) => {
@@ -13,6 +14,22 @@ function LeagueDetails({selectedLeagueId}) {
         setLeagueId({date, selectedLeagueId});
         console.log(leagueId);
         console.log(fixturesData);
+        setLeagueMatches((prev)=>{
+            const updatedMatches=new Set([prev]);
+
+            fixturesData?.response?.forEach((leagueMatch)=>{
+                updatedMatches.add({
+                    time:leagueMatch.fixture.date,
+                    homeTeam:leagueMatch.teams.home.name,
+                    homeTeamLogo:leagueMatch.teams.home.logo,
+                    awayTeam:leagueMatch.teams.away.name,
+                    awayTeamLogo:leagueMatch.teams.away.logo,
+                    win:leagueMatch.goals.home,
+                    lose:leagueMatch.goals.away
+                });
+            });
+            return [...updatedMatches];
+        });
     };
 
     return (
@@ -64,9 +81,19 @@ function LeagueDetails({selectedLeagueId}) {
                                 Search Matches
                             </button>
                         </div>
-                        {/* <LeagueIdContextProvider> */}
-                            <Fixtures />
-                        {/* </LeagueIdContextProvider> */}
+                        {
+                            leagueMatches && leagueMatches.map((match,index)=>{
+                                return(
+                                    <Fixtures key={index}
+                                 time={match.time}
+                                 homeTeam={match.homeTeam}
+                                 homeTeamLogo={match.homeTeamLogo}
+                                 awayTeam={match.awayTeam}
+                                 awayTeamLogo={match.awayTeamLogo}
+                                 win={match.win}
+                                 lose={match.lose}  />
+                                );
+                        })}    
                     </div>
                 </div>
             </div>
