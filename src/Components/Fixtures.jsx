@@ -1,5 +1,4 @@
 import React from "react";
-import bundesliga from '../assets/bundesliga.png'
 
 function Fixtures({time,homeTeam,homeTeamLogo,awayTeam,awayTeamLogo,win,lose}){
     return(
