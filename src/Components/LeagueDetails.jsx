@@ -40,7 +40,6 @@ function LeagueDetails({ selectedLeagueId }) {
     const handleStandingsBtn=(e)=>{
         e.preventDefault();
         setLeagueId({date,selectedLeagueId});
-        // console.log(standingsData);
         setStandings((prev)=>{
             const updatedStandings=new Set([prev]);
 
