@@ -16,9 +16,16 @@ function LeagueDetails({ selectedLeagueId }) {
     const [standings, setStandings] = useState([]);
     const [stats, SetStats] = useState([]);
     const [rank, setRank] = useState(1);
+    const [fixtureActive, setFixtureActive] = useState(false);
+    const [standingActive, setStandingActive] = useState(false);
+    const [statsActive, setStatsActive] = useState(false);
     const fixturesData = useLeagueFixtures();
     const standingsData = useLeagueStandings();
     const statsData = useLeagueStats();
+
+    const handleMatchBtn = () => {
+        setFixtureActive(true);
+    }
 
     const handleFixtures = (e) => {
         e.preventDefault();
@@ -45,6 +52,9 @@ function LeagueDetails({ selectedLeagueId }) {
 
     const handleStandingsBtn = (e) => {
         e.preventDefault();
+        setFixtureActive(false);
+        setStatsActive(false);
+        setStandingActive(true);
         setLeagueId({ date, selectedLeagueId });
         console.log(standingsData);
         setStandings((prev) => {
@@ -71,6 +81,9 @@ function LeagueDetails({ selectedLeagueId }) {
 
     const handleStatsBtn = (e) => {
         e.preventDefault();
+        setFixtureActive(false);
+        setStandingActive(false);
+        setStatsActive(true);
         setLeagueId({ date, selectedLeagueId });
         console.log(statsData);
         SetStats((prev) => {
@@ -107,6 +120,7 @@ function LeagueDetails({ selectedLeagueId }) {
                         <button
                             className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm active:bg-blue-600 active:text-white"
                             id="matchBtn"
+                            onClick={handleMatchBtn}
                         >
                             Matches
                         </button>
@@ -125,71 +139,89 @@ function LeagueDetails({ selectedLeagueId }) {
                             Stats
                         </button>
                     </div>
-                    <div className="w-full bg-white rounded-xl p-4 flex flex-col">
-                        <div className="w-full p-2 flex">
-                            <input
-                                type="date"
-                                id="data"
-                                value={date}
-                                className="w-36 bg-blue-400 h-10 rounded-md px-2 cursor-pointer"
-                                onChange={(e) => setDate(e.target.value)}
-                            />
-                            <button
-                                className="ml-5 px-3 py-1 bg-blue-500 rounded-lg text-white text-xl font-roboto hover:bg-blue-700 duration-150 ease-in"
-                                onClick={handleFixtures}
-                            >
-                                Search Matches
-                            </button>
-                        </div>
-                        {
-                            leagueMatches && leagueMatches.map((match, index) => {
-                                return (
-                                    <Fixtures key={index}
-                                        time={match.time}
-                                        homeTeam={match.homeTeam}
-                                        homeTeamLogo={match.homeTeamLogo}
-                                        awayTeam={match.awayTeam}
-                                        awayTeamLogo={match.awayTeamLogo}
-                                        win={match.win}
-                                        lose={match.lose} />
-                                );
-                            })}
-                    </div>
-                    <LeagueStandingsHeader>
-                        {
-                            standings && standings.map((standing, index) => {
-                                return (
-                                    <LeagueStandings
-                                        key={index}
-                                        position={standing.position}
-                                        clubLogo={standing.clubLogo}
-                                        clubName={standing.clubName}
-                                        matchesPlayed={standing.matchesPlayed}
-                                        won={standing.won}
-                                        draw={standing.draw}
-                                        lose={standing.lose}
-                                        gf={standing.gf}
-                                        ga={standing.ga}
-                                        gd={standing.gd}
-                                        points={standing.points}
+                    {
+                        fixtureActive ? (
+                            <div className="w-full bg-white rounded-xl p-4 flex flex-col">
+                                <div className="w-full p-2 flex">
+                                    <input
+                                        type="date"
+                                        id="data"
+                                        value={date}
+                                        className="w-36 bg-blue-400 h-10 rounded-md px-2 cursor-pointer"
+                                        onChange={(e) => setDate(e.target.value)}
                                     />
-                                );
-                            })}
-                    </LeagueStandingsHeader>
-                    <LeagueStatsHeader>
-                            {
-                                stats && stats.map((stat,index)=>{
-                                    return(
-                                        <LeagueStats
-                                        key={index}
-                                        playerRank={stat.playerRank}
-                                        playerImg={stat.playerImg}
-                                        playerName={stat.playerName}
-                                        goals={stat.goals}
-                                        />
-                                    );
-                                })}
-                    </LeagueStatsHeader>
+                                    <button
+                                        className="ml-5 px-3 py-1 bg-blue-500 rounded-lg text-white text-xl font-roboto hover:bg-blue-700 duration-150 ease-in"
+                                        onClick={handleFixtures}
+                                    >
+                                        Search Matches
+                                    </button>
+                                </div>
+                                {
+                                    leagueMatches && leagueMatches.map((match, index) => {
+                                        return (
+                                            <Fixtures key={index}
+                                                time={match.time}
+                                                homeTeam={match.homeTeam}
+                                                homeTeamLogo={match.homeTeamLogo}
+                                                awayTeam={match.awayTeam}
+                                                awayTeamLogo={match.awayTeamLogo}
+                                                win={match.win}
+                                                lose={match.lose} />
+                                        );
+                                    })}
+                            </div>
+                        ) : (
+                            <div>hehe</div>
+                        )
+                    }
+                    {
+                        standingActive ? (
+                            <LeagueStandingsHeader>
+                                {
+                                    standings && standings.map((standing, index) => {
+                                        return (
+                                            <LeagueStandings
+                                                key={index}
+                                                position={standing.position}
+                                                clubLogo={standing.clubLogo}
+                                                clubName={standing.clubName}
+                                                matchesPlayed={standing.matchesPlayed}
+                                                won={standing.won}
+                                                draw={standing.draw}
+                                                lose={standing.lose}
+                                                gf={standing.gf}
+                                                ga={standing.ga}
+                                                gd={standing.gd}
+                                                points={standing.points}
+                                            />
+                                        );
+                                    })}
+                            </LeagueStandingsHeader>
+                        ) : (
+                            <div></div>
+                        )
+                    }
+                    {
+                        statsActive ? (
+                            <LeagueStatsHeader>
+                                {
+                                    stats && stats.map((stat, index) => {
+                                        return (
+                                            <LeagueStats
+                                                key={index}
+                                                playerRank={stat.playerRank}
+                                                playerImg={stat.playerImg}
+                                                playerName={stat.playerName}
+                                                goals={stat.goals}
+                                            />
+                                        );
+                                    })}
+                            </LeagueStatsHeader>
+                        ) : (
+                            <div></div>
+                        )
+                    }
                 </div>
             </div>
         </div>
