@@ -10,7 +10,7 @@ function useLeagueStats() {
         const options = {
             method: "GET",
             headers: {
-                "X-RapidAPI-Key": "b95a4219c8msh9b913764c776818p1b95d1jsn6b530f0e9e2a",
+                "X-RapidAPI-Key": import.meta.env.VITE_API_KEY || "b95a4219c8msh9b913764c776818p1b95d1jsn6b530f0e9e2a",
                 "X-RapidAPI-Host": "api-football-beta.p.rapidapi.com",
             },
         };

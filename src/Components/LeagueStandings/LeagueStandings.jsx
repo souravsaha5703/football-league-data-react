@@ -2,7 +2,7 @@ import React from "react";
 
 function LeagueStandings({position,clubLogo,clubName,matchesPlayed,won,draw,lose,gf,ga,gd,points}) {
     return (
-        <div className="w-full h-7 flex items-center justify-between p-2 border-b-2 border-gray-300">
+        <div className="w-full h-10 flex items-center justify-between p-2 border-b-2 border-gray-300">
             <div className="w-1/2 p-0.5 flex gap-2">
                 <p className="font-rejouice font-semibold text-lg max-[555px]:text-sm">{position}</p>
                 <img src={clubLogo} alt="" className="w-8 object-cover" />
