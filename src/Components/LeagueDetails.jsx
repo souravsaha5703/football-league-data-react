@@ -30,8 +30,6 @@ function LeagueDetails({ selectedLeagueId }) {
     const handleFixtures = (e) => {
         e.preventDefault();
         setLeagueId({ date, selectedLeagueId });
-        console.log(leagueId);
-        console.log(fixturesData);
         setLeagueMatches((prev) => {
             const updatedMatches = new Set([prev]);
 
@@ -56,33 +54,34 @@ function LeagueDetails({ selectedLeagueId }) {
         setStatsActive(false);
         setStandingActive(true);
         setLeagueId({ date, selectedLeagueId });
-        setStandingsInfo((prev) => {
-            const updatedStandings = new Set([]);
-            const newStandings =
-                standingsData?.response[0]?.league?.standings[0];
-            // console.log(newStandings);
-            const newStandingsArray = Object.entries(newStandings).map(
-                ([key, value]) => ({ key, value })
-            );
-            // console.log(newStandingsArray);
-            newStandingsArray?.forEach((standing) => {
-                updatedStandings.add({
-                    position: standing.value.rank,
-                    clubName: standing.value.team.name,
-                    clubLogo: standing.value.team.logo,
-                    matchesPlayed: standing.value.all.played,
-                    won: standing.value.all.win,
-                    draw: standing.value.all.draw,
-                    lose: standing.value.all.lose,
-                    gf: standing.value.all.goals.for,
-                    ga: standing.value.all.goals.against,
-                    gd: standing.value.goalsDiff,
-                    points: standing.value.points,
+        if (Object.keys(standingsData).length == 0) {
+            alert("Please click again to see results");
+        } else {
+            setStandingsInfo((prev) => {
+                const updatedStandings = new Set([]);
+                const newStandings =
+                    standingsData?.response[0]?.league?.standings[0];
+                const newStandingsArray = Object.entries(newStandings).map(
+                    ([key, value]) => ({ key, value })
+                );
+                newStandingsArray?.forEach((standing) => {
+                    updatedStandings.add({
+                        position: standing.value.rank,
+                        clubName: standing.value.team.name,
+                        clubLogo: standing.value.team.logo,
+                        matchesPlayed: standing.value.all.played,
+                        won: standing.value.all.win,
+                        draw: standing.value.all.draw,
+                        lose: standing.value.all.lose,
+                        gf: standing.value.all.goals.for,
+                        ga: standing.value.all.goals.against,
+                        gd: standing.value.goalsDiff,
+                        points: standing.value.points,
+                    });
                 });
+                return [...updatedStandings];
             });
-            return [...updatedStandings];
-        });
-        console.log(standingsInfo);
+        }
     };
 
     const handleStatsBtn = (e) => {
@@ -91,21 +90,24 @@ function LeagueDetails({ selectedLeagueId }) {
         setStandingActive(false);
         setStatsActive(true);
         setLeagueId({ date, selectedLeagueId });
-        console.log(statsData);
-        SetStats((prev) => {
-            const updatedStats = new Set([prev]);
+        if (Object.keys(statsData).length == 0) {
+            alert("Please click again to see results");
+        } else {
+            SetStats((prev) => {
+                const updatedStats = new Set([prev]);
 
-            statsData.response.forEach((playerStats) => {
-                setRank((prev) => prev + 1);
-                updatedStats.add({
-                    playerRank: rank,
-                    playerImg: playerStats.player.photo,
-                    playerName: playerStats.player.name,
-                    goals: playerStats.statistics[0].goals.total,
+                statsData.response.forEach((playerStats) => {
+                    setRank((prev) => prev + 1);
+                    updatedStats.add({
+                        playerRank: rank,
+                        playerImg: playerStats.player.photo,
+                        playerName: playerStats.player.name,
+                        goals: playerStats.statistics[0].goals.total,
+                    });
                 });
+                return [...updatedStats];
             });
-            return [...updatedStats];
-        });
+        }
     };
 
     return (
@@ -133,7 +135,6 @@ function LeagueDetails({ selectedLeagueId }) {
                             className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm"
                             id="standingsBtn"
                             onClick={handleStandingsBtn}
-                            disabled={standingsData === null ? false : true}
                         >
                             Standings
                         </button>
@@ -141,7 +142,6 @@ function LeagueDetails({ selectedLeagueId }) {
                             className="font-nb font-semibold text-2xl px-3 py-3 bg-white rounded-md shadow-sm shadow-gray-500 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm"
                             id="statsBtn"
                             onClick={handleStatsBtn}
-                            disabled={stats === null ? false : true}
                         >
                             Stats
                         </button>
@@ -180,11 +180,25 @@ function LeagueDetails({ selectedLeagueId }) {
                                 })}
                         </div>
                     ) : (
-                        <div>hehe</div>
+                        <div></div>
                     )}
                     {standingActive ? (
-                        <>
-                            <LeagueStandingsHeader />
+                        <div className="w-full p-3 bg-white mt-2 rounded-xl flex flex-col gap-2">
+                            <div className="w-full h-7 flex items-center justify-between p-2 border-b-2 border-gray-300">
+                                <div className="w-1/2 p-0.5">
+                                    <h4 className="font-rejouice font-semibold text-lg max-[555px]:text-sm">Club</h4>
+                                </div>
+                                <div className="w-1/2 p-0.5 flex gap-1.5 items-center justify-end">
+                                    <p className="font-rejouice text-lg font-semibold max-[555px]:text-sm">MP</p>
+                                    <p className="font-rejouice text-lg font-semibold max-[555px]:text-sm">W</p>
+                                    <p className="font-rejouice text-lg font-semibold max-[555px]:text-sm">D</p>
+                                    <p className="font-rejouice text-lg font-semibold max-[555px]:text-sm">L</p>
+                                    <p className="font-rejouice text-lg font-semibold max-sm:hidden">GF</p>
+                                    <p className="font-rejouice text-lg font-semibold max-sm:hidden">GA</p>
+                                    <p className="font-rejouice text-lg font-semibold max-sm:hidden">GD</p>
+                                    <p className="font-rejouice text-lg font-semibold max-[555px]:text-sm">PTS</p>
+                                </div>
+                            </div>
                             {standingsInfo &&
                                 standingsInfo.map((standing, index) => (
                                     <LeagueStandings
@@ -202,13 +216,16 @@ function LeagueDetails({ selectedLeagueId }) {
                                         points={standing.points}
                                     />
                                 ))}
-                        </>
+                        </div>
                     ) : (
                         <div></div>
                     )}
                     {statsActive ? (
-                        <>
-                            <LeagueStatsHeader />
+                        <div className="w-full p-3 bg-white mt-2 rounded-xl flex flex-col gap-2">
+                            <div className="w-full h-7 flex items-center justify-between p-2 border-b-2 border-gray-300">
+                                <p className="font-rejouice text-lg font-semibold ml-2">Players</p>
+                                <p className="font-rejouice text-lg font-semibold mr-2">Goals</p>
+                            </div>
                             {stats &&
                                 stats.map((stat, index) => {
                                     return (
@@ -222,7 +239,7 @@ function LeagueDetails({ selectedLeagueId }) {
                                     );
                                 })
                             }
-                        </>
+                        </div>
                     ) : (
                         <div></div>
                     )}
