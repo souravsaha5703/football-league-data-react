@@ -58,7 +58,7 @@ function App() {
                 <FirstContent />
                 <Leagues />
                 <div className="w-full p-5 flex items-center justify-center flex-col">
-                    <h3 className="font-roboto text-4xl text-blue-600 font-bold underline mt-4">
+                    <h3 className="font-roboto text-4xl text-blue-600 font-bold underline mt-4 max-[500px]:text-2xl">
                         Search Leagues by country
                     </h3>
                     <input
@@ -80,7 +80,7 @@ function App() {
                                 <img
                                     src={component.logo}
                                     id={component.id}
-                                    className="w-24 object-cover cursor-pointer"
+                                    className="w-24 object-cover cursor-pointer max-[500px]:w-16"
                                     key={index}
                                     onClick={handleLeagueClick}
                                 />

@@ -116,7 +116,7 @@ function LeagueDetails({ selectedLeagueId }) {
                 League Details
             </h2>
             <div className="w-full p-4 flex items-center justify-center">
-                <div className="w-3/4 p-4 bg-gradient-to-br from-indigo-200 to-blue-300 rounded-xl flex flex-col shadow-md shadow-slate-400">
+                <div className="w-3/4 p-4 bg-gradient-to-br from-indigo-200 to-blue-300 rounded-xl flex flex-col shadow-md shadow-slate-400 max-md:w-3/4 max-[555px]:w-5/6 max-[375px]:w-80">
                     <h2
                         className="font-rejouice text-black text-2xl font-medium mx-5 my-5 max-[555px]:text-xl"
                         id="league-name"
