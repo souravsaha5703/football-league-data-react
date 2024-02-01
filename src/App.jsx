@@ -65,7 +65,7 @@ function App() {
                         type="text"
                         placeholder="Enter Country Name"
                         value={country}
-                        onChange={(e) => setCountry(e.target.value)}
+                        onChange={(e) => setCountry(e.target.value.toLowerCase())}
                         className="w-72 mt-5 px-4 py-3 border-2 border-gray-500 outline-none rounded-md text-lg font-bold focus:border-blue-600"
                     />
                     <button

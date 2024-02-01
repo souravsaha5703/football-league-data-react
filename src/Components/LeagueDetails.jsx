@@ -2,10 +2,8 @@ import React, { useContext, useState } from "react";
 import { LeagueIdContext } from "../Contexts/LeagueIdContextProvider";
 import useLeagueFixtures from "../Hooks/useLeagueFixtures";
 import Fixtures from "./Fixtures";
-import LeagueStandingsHeader from "./LeagueStandings/LeagueStandingsHeader";
 import useLeagueStandings from "../Hooks/useLeagueStandings";
 import LeagueStandings from "./LeagueStandings/LeagueStandings";
-import LeagueStatsHeader from "./LeagueStats/LeagueStatsHeader";
 import LeagueStats from "./LeagueStats/LeagueStats";
 import useLeagueStats from "../Hooks/useLeagueStats";
 
@@ -15,7 +13,7 @@ function LeagueDetails({ selectedLeagueId }) {
     const [leagueMatches, setLeagueMatches] = useState([]);
     const [standingsInfo, setStandingsInfo] = useState([]);
     const [stats, SetStats] = useState([]);
-    const [rank, setRank] = useState(1);
+    const [rank, setRank] = useState(0);
     const [fixtureActive, setFixtureActive] = useState(false);
     const [standingActive, setStandingActive] = useState(false);
     const [statsActive, setStatsActive] = useState(false);
@@ -24,6 +22,8 @@ function LeagueDetails({ selectedLeagueId }) {
     const statsData = useLeagueStats();
 
     const handleMatchBtn = () => {
+        setStandingActive(false);
+        setStatsActive(false);
         setFixtureActive(true);
     };
 
@@ -97,7 +97,7 @@ function LeagueDetails({ selectedLeagueId }) {
                 const updatedStats = new Set([prev]);
 
                 statsData.response.forEach((playerStats) => {
-                    setRank((prev) => prev + 1);
+                    setRank(rank+1);
                     updatedStats.add({
                         playerRank: rank,
                         playerImg: playerStats.player.photo,
