@@ -18,6 +18,7 @@ function App() {
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
     const [selectedLeagueId, setSelectedLeagueId] = useState(61);
+    const [selectedLeagueName,setSelectedLeagueName]=useState();
 
     async function leagueNames(countryInfo) {
         const response = await fetch(
@@ -35,6 +36,7 @@ function App() {
                 updatedLeagues.add({
                     logo: leagueName.league.logo,
                     id: leagueName.league.id,
+                    name:leagueName.league.name,
                 });
             });
 
@@ -48,7 +50,13 @@ function App() {
 
     const handleLeagueClick = (e) => {
         let selectedId = e.target.id;
+        let selectedClassname=e.target.className;
+        let allClasses=selectedClassname.split(" ");
+        let unwantedClasses=allClasses.slice(0,4);
+        let remainingClasses=allClasses.filter(classes => !unwantedClasses.includes(classes));
+        let leagueClass=remainingClasses.join(" ");
         setSelectedLeagueId(selectedId);
+        setSelectedLeagueName(leagueClass);
     };
 
     return (
@@ -80,7 +88,7 @@ function App() {
                                 <img
                                     src={component.logo}
                                     id={component.id}
-                                    className="w-24 object-cover cursor-pointer max-[500px]:w-16"
+                                    className={`w-24 object-cover cursor-pointer max-[500px]:w-16 ${component.name}`}
                                     key={index}
                                     onClick={handleLeagueClick}
                                 />
@@ -89,7 +97,7 @@ function App() {
                     </div>
                 </div>
                 <LeagueIdContextProvider>
-                    <LeagueDetails selectedLeagueId={selectedLeagueId} />
+                    <LeagueDetails selectedLeagueId={selectedLeagueId} selectedLeagueName={selectedLeagueName} />
                 </LeagueIdContextProvider>
             </div>
         </>

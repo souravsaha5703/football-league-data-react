@@ -7,13 +7,12 @@ import LeagueStandings from "./LeagueStandings/LeagueStandings";
 import LeagueStats from "./LeagueStats/LeagueStats";
 import useLeagueStats from "../Hooks/useLeagueStats";
 
-function LeagueDetails({ selectedLeagueId }) {
+function LeagueDetails({ selectedLeagueId,selectedLeagueName }) {
     const { leagueId, setLeagueId } = useContext(LeagueIdContext);
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
     const [leagueMatches, setLeagueMatches] = useState([]);
     const [standingsInfo, setStandingsInfo] = useState([]);
     const [stats, SetStats] = useState([]);
-    const [rank, setRank] = useState(0);
     const [fixtureActive, setFixtureActive] = useState(false);
     const [standingActive, setStandingActive] = useState(false);
     const [statsActive, setStatsActive] = useState(false);
@@ -30,22 +29,26 @@ function LeagueDetails({ selectedLeagueId }) {
     const handleFixtures = (e) => {
         e.preventDefault();
         setLeagueId({ date, selectedLeagueId });
-        setLeagueMatches((prev) => {
-            const updatedMatches = new Set([prev]);
-
-            fixturesData?.response?.forEach((leagueMatch) => {
-                updatedMatches.add({
-                    time: leagueMatch.fixture.date,
-                    homeTeam: leagueMatch.teams.home.name,
-                    homeTeamLogo: leagueMatch.teams.home.logo,
-                    awayTeam: leagueMatch.teams.away.name,
-                    awayTeamLogo: leagueMatch.teams.away.logo,
-                    win: leagueMatch.goals.home,
-                    lose: leagueMatch.goals.away,
+        if (Object.keys(fixturesData).length == 0) {
+            alert("Fetching the data, please click the button again after sometime");
+        } else{
+            setLeagueMatches((prev) => {
+                const updatedMatches = new Set([prev]);
+    
+                fixturesData?.response?.forEach((leagueMatch) => {
+                    updatedMatches.add({
+                        time: leagueMatch.fixture.date,
+                        homeTeam: leagueMatch.teams.home.name,
+                        homeTeamLogo: leagueMatch.teams.home.logo,
+                        awayTeam: leagueMatch.teams.away.name,
+                        awayTeamLogo: leagueMatch.teams.away.logo,
+                        win: leagueMatch.goals.home,
+                        lose: leagueMatch.goals.away,
+                    });
                 });
+                return [...updatedMatches];
             });
-            return [...updatedMatches];
-        });
+        }
     };
 
     const handleStandingsBtn = (e) => {
@@ -55,7 +58,7 @@ function LeagueDetails({ selectedLeagueId }) {
         setStandingActive(true);
         setLeagueId({ date, selectedLeagueId });
         if (Object.keys(standingsData).length == 0) {
-            alert("Please click again to see results");
+            alert("Fetching the data, please click the button again after sometime");
         } else {
             setStandingsInfo((prev) => {
                 const updatedStandings = new Set([]);
@@ -91,15 +94,13 @@ function LeagueDetails({ selectedLeagueId }) {
         setStatsActive(true);
         setLeagueId({ date, selectedLeagueId });
         if (Object.keys(statsData).length == 0) {
-            alert("Please click again to see results");
+            alert("Fetching the data, please click the button again after sometime");
         } else {
             SetStats((prev) => {
                 const updatedStats = new Set([prev]);
 
                 statsData.response.forEach((playerStats) => {
-                    setRank(rank+1);
                     updatedStats.add({
-                        playerRank: rank,
                         playerImg: playerStats.player.photo,
                         playerName: playerStats.player.name,
                         goals: playerStats.statistics[0].goals.total,
@@ -121,7 +122,7 @@ function LeagueDetails({ selectedLeagueId }) {
                         className="font-rejouice text-black text-2xl font-medium mx-5 my-5 max-[555px]:text-xl"
                         id="league-name"
                     >
-                        League Name
+                        {selectedLeagueName}
                     </h2>
                     <div className="w-full py-2 flex items-center justify-center gap-4 max-[375px]:gap-2 max-[375px]:flex-wrap">
                         <button
@@ -231,7 +232,6 @@ function LeagueDetails({ selectedLeagueId }) {
                                     return (
                                         <LeagueStats
                                             key={index}
-                                            playerRank={stat.playerRank}
                                             playerImg={stat.playerImg}
                                             playerName={stat.playerName}
                                             goals={stat.goals}
