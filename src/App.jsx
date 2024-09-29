@@ -51,15 +51,9 @@ function App() {
         }
     };
 
-    const handleLeagueClick = (e) => {
-        let selectedId = e.target.id;
-        let selectedClassname = e.target.className;
-        let allClasses = selectedClassname.split(" ");
-        let unwantedClasses = allClasses.slice(0, 4);
-        let remainingClasses = allClasses.filter(classes => !unwantedClasses.includes(classes));
-        let leagueClass = remainingClasses.join(" ");
-        setSelectedLeagueId(selectedId);
-        setSelectedLeagueName(leagueClass);
+    const handleLeagueClick = (leagueId, leagueName) => {
+        setSelectedLeagueId(leagueId);
+        setSelectedLeagueName(leagueName);
     };
 
     return (
@@ -86,9 +80,11 @@ function App() {
                         Search League
                     </Button>
                     {loader ? (
-                        <Loader color="text-blue-700"/>
+                        <div className="w-full flex items-center justify-center mt-5">
+                            <Loader color="text-blue-700" />
+                        </div>
                     ) : (
-                        <div className="mt-5 w-full h-max px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
+                        <div className="mt-5 w-full h-48 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
                             {leagueComponents && leagueComponents.map((component, index) => {
                                 return (
                                     <img
@@ -96,7 +92,7 @@ function App() {
                                         id={component.id}
                                         className={`w-24 object-cover cursor-pointer max-[500px]:w-16 ${component.name}`}
                                         key={index}
-                                        onClick={handleLeagueClick}
+                                        onClick={() => handleLeagueClick(component.id, component.name)}
                                     />
                                 );
                             })}
