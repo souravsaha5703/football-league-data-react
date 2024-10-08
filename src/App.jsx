@@ -7,13 +7,14 @@ import axios from "axios";
 import Loader from "./Components/Loader";
 import { LeagueIdContextProvider } from "./Contexts/LeagueIdContextProvider";
 import LeagueDetails from "./Components/LeagueDetails";
+import { LeagueIdContext } from "./Contexts/LeagueIdContextProvider";
 
 function App() {
     const [loader, setLoader] = useState(false);
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
-    const [selectedLeagueId, setSelectedLeagueId] = useState(61);
-    const [selectedLeagueName, setSelectedLeagueName] = useState();
+
+    const { leagueId, setLeagueId, leagueName, setLeagueName } = useContext(LeagueIdContext);
 
     const searchBtnClick = async () => {
         setLoader(true);
@@ -51,9 +52,9 @@ function App() {
         }
     };
 
-    const handleLeagueClick = (leagueId, leagueName) => {
-        setSelectedLeagueId(leagueId);
-        setSelectedLeagueName(leagueName);
+    const handleLeagueClick = (selecteLeagueId, selectedLeagueName) => {
+        setLeagueId(selecteLeagueId);
+        setLeagueName(selectedLeagueName);
     };
 
     return (
@@ -81,7 +82,7 @@ function App() {
                     </Button>
                     {loader ? (
                         <div className="w-full flex items-center justify-center mt-5">
-                            <Loader color="text-blue-700" />
+                            <Loader color="text-blue-700" size="size-10" />
                         </div>
                     ) : (
                         <div className="mt-5 w-full h-48 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
@@ -100,7 +101,7 @@ function App() {
                     )}
                 </div>
                 <LeagueIdContextProvider>
-                    <LeagueDetails selectedLeagueId={selectedLeagueId} selectedLeagueName={selectedLeagueName} />
+                    <LeagueDetails selectedLeagueId={leagueId} selectedLeagueName={leagueName} />
                 </LeagueIdContextProvider>
             </div >
         </>
