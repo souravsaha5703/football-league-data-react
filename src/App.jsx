@@ -5,7 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import Loader from "./Components/Loader";
-import { LeagueIdContextProvider } from "./Contexts/LeagueIdContextProvider";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import LeagueDetails from "./Components/LeagueDetails";
 import { LeagueIdContext } from "./Contexts/LeagueIdContextProvider";
 
@@ -13,8 +19,9 @@ function App() {
     const [loader, setLoader] = useState(false);
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
+    const [leagueSeasonActive, setLeagueSeasonActive] = useState(false);
 
-    const { leagueId, setLeagueId, leagueName, setLeagueName } = useContext(LeagueIdContext);
+    const { leagueId, setLeagueId, leagueName, setLeagueName, setLeagueSeason } = useContext(LeagueIdContext);
 
     const searchBtnClick = async () => {
         setLoader(true);
@@ -55,7 +62,12 @@ function App() {
     const handleLeagueClick = (selecteLeagueId, selectedLeagueName) => {
         setLeagueId(selecteLeagueId);
         setLeagueName(selectedLeagueName);
+        setLeagueSeasonActive(true);
     };
+
+    const handleSeason = (season) => {
+        setLeagueSeason(season);
+    }
 
     return (
         <>
@@ -99,10 +111,19 @@ function App() {
                             })}
                         </div>
                     )}
+                    {leagueSeasonActive && <Select onValueChange={handleSeason}>
+                        <SelectTrigger className="w-[180px] font-noto font-medium">
+                            <SelectValue placeholder="Select Season" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="2024" className="font-noto cursor-pointer font-medium">2024-2025</SelectItem>
+                            <SelectItem value="2023" className="font-noto cursor-pointer font-medium">2023-2024</SelectItem>
+                            <SelectItem value="2022" className="font-noto cursor-pointer font-medium">2022-2023</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    }
                 </div>
-                <LeagueIdContextProvider>
-                    <LeagueDetails selectedLeagueId={leagueId} selectedLeagueName={leagueName} />
-                </LeagueIdContextProvider>
+                <LeagueDetails selectedLeagueId={leagueId} selectedLeagueName={leagueName} />
             </div >
         </>
     );
