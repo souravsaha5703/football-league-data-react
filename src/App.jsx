@@ -19,11 +19,13 @@ function App() {
     const [loader, setLoader] = useState(false);
     const [country, setCountry] = useState("");
     const [leagueComponents, setLeagueComponents] = useState([]);
+    const [showLeagues, setShowLeagues] = useState(false);
     const [leagueSeasonActive, setLeagueSeasonActive] = useState(false);
 
     const { leagueId, setLeagueId, leagueName, setLeagueName, setLeagueSeason } = useContext(LeagueIdContext);
 
     const searchBtnClick = async () => {
+        setShowLeagues(false);
         setLoader(true);
         const options = {
             method: "GET",
@@ -36,6 +38,10 @@ function App() {
         };
         try {
             const response = await axios.request(options);
+
+            if (response.data.results == 0) {
+                alert("No League Found");
+            }
 
             setLeagueComponents((prevState) => {
                 // Using Set to avoid duplicates
@@ -53,6 +59,7 @@ function App() {
             });
 
             setLoader(false);
+            setShowLeagues(true);
 
         } catch (error) {
             console.error(error);
@@ -92,13 +99,17 @@ function App() {
                     >
                         Search League
                     </Button>
-                    {loader ? (
-                        <div className="w-full flex items-center justify-center mt-5">
-                            <Loader color="text-blue-700" size="size-10" />
-                        </div>
+                    {loader && <div className="w-full flex items-center justify-center mt-5">
+                        <Loader color="text-blue-700" size="size-10" />
+                    </div>
+                    }
+                    {!showLeagues ? (
+                        <></>
                     ) : (
-                        <div className="mt-5 w-full h-48 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll">
-                            {leagueComponents && leagueComponents.map((component, index) => {
+                        <div className="mt-5 w-full h-48 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll transition-all ease-in-out duration-100">
+                            {leagueComponents.length === 1 ? (
+                                <h1>No leagues found please enter valid country name</h1>
+                            ) : leagueComponents.map((component, index) => {
                                 return (
                                     <img
                                         src={component.logo}
