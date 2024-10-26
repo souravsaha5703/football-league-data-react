@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { LeagueIdContext } from "../Contexts/LeagueIdContextProvider";
 
-function useLeagueFixtures() {
-  const [data, setData] = useState({});
-  const { leagueId } = useContext(LeagueIdContext);
+function useLeagueFixtures(date) {
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { leagueId, leagueSeason } = useContext(LeagueIdContext);
 
   useEffect(() => {
     const options = {
@@ -14,27 +16,42 @@ function useLeagueFixtures() {
       },
     };
 
-    // Check if leagueId is defined before attempting to destructure
     if (leagueId) {
-      const { date, selectedLeagueId } = leagueId;
-
       async function fixturesData() {
+        setLoading(true);
         try {
-          const response = await fetch(`https://api-football-beta.p.rapidapi.com/fixtures?season=2023&date=${date}&league=${selectedLeagueId}`, options);
+          const response = await fetch(`https://api-football-beta.p.rapidapi.com/fixtures?season=${leagueSeason}&date=${date}&league=${leagueId}`, options);
           const resdata = await response.json();
-          setData(resdata);
+
+          setData(() => {
+            const updatedMatches = new Set([]);
+
+            resdata?.response?.forEach((leagueMatch) => {
+              updatedMatches.add({
+                time: leagueMatch.fixture.date,
+                homeTeam: leagueMatch.teams.home.name,
+                homeTeamLogo: leagueMatch.teams.home.logo,
+                awayTeam: leagueMatch.teams.away.name,
+                awayTeamLogo: leagueMatch.teams.away.logo,
+                win: leagueMatch.goals.home,
+                lose: leagueMatch.goals.away,
+              });
+            });
+            return [...updatedMatches];
+          });
         } catch (error) {
+          setError(err.response.data.message);
           console.error("Error fetching fixtures:", error);
+        } finally {
+          setLoading(false);
         }
       }
 
       fixturesData();
     }
-  }, [leagueId]); // Ensure useEffect runs when leagueId changes
+  }, [leagueId]);
 
-  return data;
+  return { data, error, loading };
 }
-
-
 
 export default useLeagueFixtures;

@@ -12,7 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import LeagueDetails from "./Components/LeagueDetails";
+import LeagueInfo from "./Components/LeagueInfo";
 import { LeagueIdContext } from "./Contexts/LeagueIdContextProvider";
 
 function App() {
@@ -21,6 +21,7 @@ function App() {
     const [leagueComponents, setLeagueComponents] = useState([]);
     const [showLeagues, setShowLeagues] = useState(false);
     const [leagueSeasonActive, setLeagueSeasonActive] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
 
     const { leagueId, setLeagueId, leagueName, setLeagueName, setLeagueSeason } = useContext(LeagueIdContext);
 
@@ -74,6 +75,7 @@ function App() {
 
     const handleSeason = (season) => {
         setLeagueSeason(season);
+        setShowDetails(true);
     }
 
     return (
@@ -108,7 +110,7 @@ function App() {
                     ) : (
                         <div className="mt-5 w-full h-48 px-2 py-2 flex flex-wrap items-center justify-center gap-5 overflow-hidden overflow-y-scroll transition-all ease-in-out duration-100">
                             {leagueComponents.length === 1 ? (
-                                <h1>No leagues found please enter valid country name</h1>
+                                <h1 className="font-noto text-2xl font-medium capitalize text-center max-[425px]:text-lg">No leagues found please enter valid country name</h1>
                             ) : leagueComponents.map((component, index) => {
                                 return (
                                     <img
@@ -123,7 +125,7 @@ function App() {
                         </div>
                     )}
                     {leagueSeasonActive && <Select onValueChange={handleSeason}>
-                        <SelectTrigger className="w-[180px] font-noto font-medium">
+                        <SelectTrigger className="w-[180px] font-noto font-medium mt-12">
                             <SelectValue placeholder="Select Season" />
                         </SelectTrigger>
                         <SelectContent>
@@ -134,7 +136,7 @@ function App() {
                     </Select>
                     }
                 </div>
-                <LeagueDetails selectedLeagueId={leagueId} selectedLeagueName={leagueName} />
+                {showDetails && <LeagueInfo />}
             </div >
         </>
     );
