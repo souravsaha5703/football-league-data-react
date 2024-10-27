@@ -38,7 +38,7 @@ function LeagueInfo() {
                 <h3 className="font-roboto text-4xl text-blue-600 font-bold underline mt-4 max-[500px]:text-2xl">
                     League Details
                 </h3>
-                <div className='mt-8 w-4/5 p-5 bg-gradient-to-b from-slate-50 to-blue-300 rounded-md flex flex-col'>
+                <div className='mt-8 w-4/5 p-5 bg-gradient-to-b from-slate-50 to-blue-300 rounded-md flex flex-col max-[425px]:w-11/12'>
                     <h2 className="font-rejouice text-black text-2xl font-medium mx-5 my-5 max-[555px]:text-xl" id="league-name">
                         {leagueName}
                     </h2>
