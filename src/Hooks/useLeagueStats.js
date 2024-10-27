@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { LeagueIdContext, LeagueIdContextProvider } from "../Contexts/LeagueIdContextProvider";
+import { LeagueIdContext } from "../Contexts/LeagueIdContextProvider";
 
 function useLeagueStats() {
-    const [data, setData] = useState({});
-    const { leagueId } = useContext(LeagueIdContext);
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const { leagueId, leagueSeason } = useContext(LeagueIdContext);
 
     useEffect(() => {
         const options = {
@@ -16,15 +18,28 @@ function useLeagueStats() {
         };
 
         if (leagueId) {
-            const { selectedLeagueId } = leagueId;
-
             async function liveStandings() {
+                setLoading(true);
                 try {
-                    const response = await fetch(`https://api-football-beta.p.rapidapi.com/players/topscorers?season=2023&league=${selectedLeagueId}`, options);
+                    const response = await fetch(`https://api-football-beta.p.rapidapi.com/players/topscorers?season=${leagueSeason}&league=${leagueId}`, options);
                     const resdata = await response.json();
-                    setData(resdata);
-                }catch(error){
+                    setData(() => {
+                        const updatedStats = new Set([]);
+
+                        resdata.response.forEach((playerStats) => {
+                            updatedStats.add({
+                                playerImg: playerStats.player.photo,
+                                playerName: playerStats.player.name,
+                                goals: playerStats.statistics[0].goals.total,
+                            });
+                        });
+                        return [...updatedStats];
+                    });
+                } catch (error) {
+                    setError(err.response.data.message);
                     console.error("Error fetching fixtures:", error);
+                } finally {
+                    setLoading(false);
                 }
             }
 
@@ -33,7 +48,7 @@ function useLeagueStats() {
 
     }, [leagueId]);
 
-    return data;
+    return { data, error, loading };
 }
 
 export default useLeagueStats;

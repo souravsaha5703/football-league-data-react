@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react';
 import LeagueMatches from './LeagueMatches';
 import LeagueStandings from './LeagueStandings';
+import LeagueStatistics from './LeagueStatistics';
 import { LeagueIdContext } from '@/Contexts/LeagueIdContextProvider';
 
 function LeagueInfo() {
 
     const [matchSection, setMatchSection] = useState(false);
-    const [standingsSection,setStandingsSection] = useState(false);
-    const [statsSection,setStatsSection] = useState(false);
-    const [date,setDate] = useState('');
+    const [standingsSection, setStandingsSection] = useState(false);
+    const [statsSection, setStatsSection] = useState(false);
+    const [date, setDate] = useState('');
 
-    const {leagueName} = useContext(LeagueIdContext);
+    const { leagueName } = useContext(LeagueIdContext);
 
     const handleMatches = () => {
         setDate(new Date().toISOString().split("T")[0]);
@@ -23,6 +24,12 @@ function LeagueInfo() {
         setMatchSection(false);
         setStatsSection(false);
         setStandingsSection(true);
+    }
+
+    const handleStats = () => {
+        setMatchSection(false);
+        setStandingsSection(false);
+        setStatsSection(true);
     }
 
     return (
@@ -53,12 +60,14 @@ function LeagueInfo() {
                         <button
                             className="font-noto font-medium text-2xl px-3 py-2 bg-white rounded-sm shadow-sm shadow-slate-400 text-blue-600 hover:text-white  hover:bg-blue-600 duration-200 ease-in-out max-md:text-lg max-[425px]:text-sm"
                             id="statsBtn"
+                            onClick={handleStats}
                         >
                             Stats
                         </button>
                     </div>
-                    {matchSection && <LeagueMatches selectedDate={date}/>}
-                    {standingsSection && <LeagueStandings/>}
+                    {matchSection && <LeagueMatches selectedDate={date} />}
+                    {standingsSection && <LeagueStandings />}
+                    {statsSection && <LeagueStatistics />}
                 </div>
             </div>
         </>
